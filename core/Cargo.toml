@@ -29,8 +29,13 @@ serde = ["dep:serde"]
 series = []
 encryption = []
 
-[target.'cfg(target_os = "linux")'.dependencies]
+# io-uring's prebuilt sys.rs bindings only support 64-bit Linux; gate the
+# optional dep so 32-bit/exotic Linux (i686/armv7/s390x) cross-compiles even
+# if a downstream accidentally enables the `io_uring` feature there.
+[target.'cfg(all(target_os = "linux", target_pointer_width = "64"))'.dependencies]
 io-uring = { version = "0.7.5", optional = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
 libc = { version = "0.2.172" }
 
 [target.'cfg(target_family = "unix")'.dependencies]

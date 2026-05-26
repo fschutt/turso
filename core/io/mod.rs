@@ -527,7 +527,10 @@ impl TempBufferCache {
 }
 
 cfg_block! {
-    #[cfg(all(target_os = "linux", feature = "io_uring"))] {
+    // io-uring's prebuilt bindings only support 64-bit Linux, so the io_uring
+    // backend is restricted to that target. 32-bit/exotic Linux falls back to
+    // the UnixIO (syscall) backend below.
+    #[cfg(all(target_os = "linux", target_pointer_width = "64", feature = "io_uring"))] {
         mod io_uring;
         #[cfg(feature = "fs")]
         pub use io_uring::UringIO;

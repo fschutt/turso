@@ -54,7 +54,7 @@ pub use error::{CompletionError, LimboError};
 pub use io::clock::{Clock, Instant};
 #[cfg(all(feature = "fs", target_family = "unix"))]
 pub use io::UnixIO;
-#[cfg(all(feature = "fs", target_os = "linux", feature = "io_uring"))]
+#[cfg(all(feature = "fs", target_os = "linux", target_pointer_width = "64", feature = "io_uring"))]
 pub use io::UringIO;
 pub use io::{
     Buffer, Completion, CompletionType, File, MemoryIO, OpenFlags, PlatformIO, SyscallIO,
@@ -648,7 +648,7 @@ impl Database {
             None => match vfs.as_ref() {
                 "memory" => Arc::new(MemoryIO::new()),
                 "syscall" => Arc::new(SyscallIO::new()?),
-                #[cfg(all(target_os = "linux", feature = "io_uring"))]
+                #[cfg(all(target_os = "linux", target_pointer_width = "64", feature = "io_uring"))]
                 "io_uring" => Arc::new(UringIO::new()?),
                 other => {
                     return Err(LimboError::InvalidArgument(format!("no such VFS: {other}")));
@@ -1689,7 +1689,7 @@ impl Connection {
             {
                 all_vfs.push("syscall".to_string());
             }
-            #[cfg(all(target_os = "linux", feature = "io_uring"))]
+            #[cfg(all(target_os = "linux", target_pointer_width = "64", feature = "io_uring"))]
             {
                 all_vfs.push("io_uring".to_string());
             }

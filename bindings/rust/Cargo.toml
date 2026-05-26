@@ -16,8 +16,15 @@ experimental_indexes = []
 antithesis = ["turso_core/antithesis"]
 
 [dependencies]
-turso_core = { workspace = true, features = ["io_uring"] }
+turso_core = { workspace = true }
 thiserror = "2.0.9"
+
+# io_uring's prebuilt bindings (io-uring crate) only support 64-bit Linux
+# targets (i686/armv7/s390x fail with "prebuilt sys.rs may not be compatible").
+# Enable the io_uring backend only there; other targets use the syscall
+# (UnixIO/GenericIO) fallback.
+[target.'cfg(all(target_os = "linux", target_pointer_width = "64"))'.dependencies]
+turso_core = { workspace = true, features = ["io_uring"] }
 
 [dev-dependencies]
 tempfile = "3.20.0"
