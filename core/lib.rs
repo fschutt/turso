@@ -54,7 +54,7 @@ pub use error::{CompletionError, LimboError};
 pub use io::clock::{Clock, Instant};
 #[cfg(all(feature = "fs", target_family = "unix"))]
 pub use io::UnixIO;
-#[cfg(all(feature = "fs", target_os = "linux", target_pointer_width = "64", feature = "io_uring"))]
+#[cfg(all(feature = "fs", target_os = "linux", any(target_arch = "x86_64", target_arch = "aarch64"), feature = "io_uring"))]
 pub use io::UringIO;
 pub use io::{
     Buffer, Completion, CompletionType, File, MemoryIO, OpenFlags, PlatformIO, SyscallIO,
