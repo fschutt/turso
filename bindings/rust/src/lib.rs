@@ -138,14 +138,18 @@ impl Builder {
                     ))
                 }
             }
-            #[cfg(target_os = "linux")]
+            // `turso_core::UringIO` is only compiled in on 64-bit Linux (the
+            // io-uring prebuilt sys bindings reject i686/armv7/s390x), so the
+            // call site must be gated identically to the dependency feature in
+            // Cargo.toml — otherwise 32-bit Linux references a missing symbol.
+            #[cfg(all(target_os = "linux", target_pointer_width = "64"))]
             "io_uring" => Ok(Arc::new(
                 turso_core::UringIO::new()
                     .map_err(|e| Error::SqlExecutionFailure(e.to_string()))?,
             )),
-            #[cfg(not(target_os = "linux"))]
+            #[cfg(not(all(target_os = "linux", target_pointer_width = "64")))]
             "io_uring" => Err(Error::SqlExecutionFailure(
-                "io_uring is only available on Linux targets".to_string(),
+                "io_uring is only available on 64-bit Linux targets".to_string(),
             )),
             "" => {
                 // Default behavior: memory for ":memory:", platform IO for files
