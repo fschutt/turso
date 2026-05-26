@@ -78,11 +78,11 @@ fn try_pwritev_raw(
                 fd,
                 iov[0].iov_base as *const libc::c_void,
                 iov[0].iov_len,
-                off as i64,
+                off as libc::off_t,
             )
         }
     } else {
-        unsafe { libc::pwritev(fd, iov.as_ptr(), iov.len() as i32, off as i64) }
+        unsafe { libc::pwritev(fd, iov.as_ptr(), iov.len() as libc::c_int, off as libc::off_t) }
     };
     if n < 0 {
         Err(std::io::Error::last_os_error())
