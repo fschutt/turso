@@ -92,11 +92,11 @@ license = "MIT"
 repository = "https://github.com/tursodatabase/turso"
 
 [workspace.dependencies]
-turso = { path = "bindings/rust", version = "0.7.2" }
+turso = { path = "bindings/rust", version = "0.7.2", package = "turso-azul" }
 turso_node = { path = "bindings/javascript", version = "0.7.2" }
-turso_sdk_kit = { path = "sdk-kit", version = "0.7.2" }
+turso_sdk_kit = { path = "sdk-kit", version = "0.7.2", package = "turso-sdk-kit-azul" }
 turso_sdk_kit_macros = { path = "sdk-kit-macros", version = "0.7.2" }
-turso_sync_sdk_kit = { path = "sync/sdk-kit", version = "0.7.2" }
+turso_sync_sdk_kit = { path = "sync/sdk-kit", version = "0.7.2", package = "turso-sync-sdk-kit-azul" }
 limbo_completion = { path = "extensions/completion", version = "0.7.2" }
 turso_core = { path = "core", version = "0.7.2" }
 turso_sync_engine = { path = "sync/engine", version = "0.7.2" }

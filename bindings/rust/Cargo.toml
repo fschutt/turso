@@ -1,13 +1,16 @@
 # Copyright 2025 the Turso authors. All rights reserved. MIT license.
 
 [package]
-name = "turso"
+name = "turso-azul"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
-repository.workspace = true
-description = "Turso Rust API"
+repository = "https://github.com/fschutt/turso"
+description = "Azul fork of the turso 0.7.2 Rust API: io_uring and win_iocp are opt-in features (`io_uring`, `experimental_win_iocp`) rather than forced on through the sdk kit. Depend on it as `turso = { package = \"turso-azul\" }`."
+
+[lib]
+name = "turso"
 
 [lints]
 workspace = true
