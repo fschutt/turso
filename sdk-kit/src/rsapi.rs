@@ -693,26 +693,26 @@ impl TursoDatabase {
                         })?)
                     }
                 }
-                #[cfg(all(target_os = "linux", not(miri)))]
+                #[cfg(all(target_os = "linux", not(miri), feature = "io_uring"))]
                 Some("io_uring") => Arc::new(turso_core::UringIO::new().map_err(|e| {
                     TursoError::Error(format!("unable to create io_uring backend: {e}"))
                 })?),
-                #[cfg(all(target_os = "windows", not(miri)))]
+                #[cfg(all(target_os = "windows", not(miri), feature = "experimental_win_iocp"))]
                 Some("experimental_win_iocp") => {
                     Arc::new(turso_core::WindowsIOCP::new().map_err(|e| {
                         TursoError::Error(format!("unable to create win_iocp backend: {e}"))
                     })?)
                 }
-                #[cfg(any(not(target_os = "linux"), miri))]
+                #[cfg(any(not(target_os = "linux"), miri, not(feature = "io_uring")))]
                 Some("io_uring") => {
                     return Err(TursoError::Error(
-                        "io_uring is only available on Linux targets".to_string(),
+                        "io_uring is only available on Linux targets, and only with the `io_uring` feature enabled".to_string(),
                     ));
                 }
-                #[cfg(any(not(target_os = "windows"), miri))]
+                #[cfg(any(not(target_os = "windows"), miri, not(feature = "experimental_win_iocp")))]
                 Some("experimental_win_iocp") => {
                     return Err(TursoError::Error(
-                        "win_iocp is only available on Windows targets".to_string(),
+                        "win_iocp is only available on Windows targets, and only with the `experimental_win_iocp` feature enabled".to_string(),
                     ));
                 }
                 Some(vfs) => {

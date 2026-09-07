@@ -12,6 +12,14 @@ default = ["encryption", "pure-rust-crypto"]
 encryption = ["turso_core/encryption"]
 pure-rust-crypto = ["turso_core/pure-rust-crypto"]
 fts = ["turso_core/fts"]
+# Opt-in IO backends, off by default. Both used to be forced on through the
+# turso_core dependency above, so every consumer of this crate (and of `turso`,
+# which has no way to opt out) carried io-uring even when it only ever asked
+# for the syscall backend — and io-uring's prebuilt bindings refuse to compile
+# on 32-bit Linux. Requesting the "io_uring" / "experimental_win_iocp" VFS
+# without the matching feature is a runtime error naming the feature.
+io_uring = ["turso_core/io_uring"]
+experimental_win_iocp = ["turso_core/experimental_win_iocp"]
 
 [lib]
 doc = false
@@ -19,11 +27,7 @@ crate-type = ["lib", "cdylib", "staticlib"]
 
 [dependencies]
 env_logger = { workspace = true, default-features = false }
-turso_core = { workspace = true, features = [
-    "conn_raw_api",
-    "io_uring",
-    "experimental_win_iocp",
-] }
+turso_core = { workspace = true, features = ["conn_raw_api"] }
 turso_ext = { workspace = true }
 turso_sdk_kit_macros = { workspace = true }
 tracing = { workspace = true }
